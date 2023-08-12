@@ -370,7 +370,7 @@ model.save('../model.h5')
 # In[37]:
 
 
-loaded_model = tf.keras.models.load_model("/content/model")
+loaded_model = tf.keras.models.load_model("../model")
 
 # Use the loaded model for predictions
 predictions = loaded_model.predict(img_input)
@@ -380,4 +380,3 @@ predictions = loaded_model.predict(img_input)
 
 
 print(np.argmax(predictions))
-
