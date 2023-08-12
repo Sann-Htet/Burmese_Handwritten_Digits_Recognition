@@ -36,10 +36,10 @@ model = create_model()
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # Train the model
-epoch = 10
+epoch = 20
 history = model.fit(X_train, y_train,
                     epochs=epoch,
-                    batch_size=32,
+                    batch_size=128,
                     validation_data=(X_val, y_val))
 
 # Evaluate the model
