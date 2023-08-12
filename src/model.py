@@ -1,4 +1,4 @@
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from tensorflow.keras.models import Sequential
 from data_preprocessing import CustomPreprocessNormalizationLayer
 
@@ -25,6 +25,8 @@ def create_model():
 
     # Add Dense layers
     model.add(Dense(64, activation='relu'))
+    model.add(Dropout(0.5))  # Dropout layer with a dropout rate of 0.5
+
     model.add(Dense(10, activation='softmax'))
     
     return model
