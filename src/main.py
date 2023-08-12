@@ -48,3 +48,9 @@ accuracy = evaluate_model(model, X_test, y_test)
 print("Test accuracy:", accuracy)
 
 # Save the model
+
+# save the model using "SavedModel" format
+#model.save('../model')
+
+# save the model using "HDF5" format
+#model.save('../model.h5')
