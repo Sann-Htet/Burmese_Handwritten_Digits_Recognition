@@ -195,17 +195,60 @@ def create_model():
 # In[17]:
 
 
-model = create_model()
+def create_deeper_model():
+    model = Sequential()
+
+    # Add the CustomPreprocessNormalizationLayer as the first layer
+    model.add(CustomPreprocessNormalizationLayer())
+
+    # Convolutional layer block 1
+    model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1), padding='same'))
+    model.add(MaxPooling2D((2, 2)))
+    model.add(Dropout(0.5))
+
+    # Convolutional layer block 2
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+    model.add(MaxPooling2D((2, 2)))
+    model.add(Dropout(0.5))
+
+    # Convolutional layer block 3
+    model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
+    model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
+    model.add(MaxPooling2D((2, 2)))
+    model.add(Dropout(0.5))
+
+    # Flatten the output for Dense layers
+    model.add(Flatten())
+
+    # Dense layers
+    model.add(Dense(256, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(128, activation='relu'))
+    model.add(Dropout(0.5))
+
+    # Output layer
+    model.add(Dense(num_classes, activation='softmax'))
+
+    return model
 
 
 # In[18]:
+
+
+model = create_deeper_model()
+model.build(input_shape=(None, 28, 28, 1))
+model.summary() # Print the model summary
+
+
+# In[19]:
 
 
 # Configures the model for training
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 
-# In[19]:
+# In[20]:
 
 
 # use TensorBoard, princess Aurora!
@@ -215,23 +258,16 @@ callbacks = [
 ]
 
 
-# In[20]:
+# In[21]:
 
 
 # Train the model
-epoch = 20
+epoch = 10
 history = model.fit(X_train, y_train,
                     epochs=epoch,
                     batch_size=128,
                     validation_data=(X_val, y_val),
                     callbacks=callbacks)
-
-
-# In[21]:
-
-
-# Print the model summary
-model.summary()
 
 
 # In[22]:
@@ -367,7 +403,7 @@ model.save('../model')
 model.save('../model.h5')
 
 
-# In[37]:
+# In[38]:
 
 
 loaded_model = tf.keras.models.load_model("../model")
@@ -376,7 +412,8 @@ loaded_model = tf.keras.models.load_model("../model")
 predictions = loaded_model.predict(img_input)
 
 
-# In[38]:
+# In[39]:
 
 
 print(np.argmax(predictions))
+
