@@ -2,7 +2,7 @@ import numpy as np
 import pickle
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
-from model import create_model
+from model import create_deeper_model
 from evaluation import evaluate_model
 
 local_filename = '../dataset/data.pkl'
@@ -30,13 +30,13 @@ y_test = y_test.reshape(len(y_test), 1)
 
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
 
-model = create_model()
+model = create_deeper_model()
 
 # Configures the model for training
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # Train the model
-epoch = 20
+epoch = 10
 history = model.fit(X_train, y_train,
                     epochs=epoch,
                     batch_size=128,
