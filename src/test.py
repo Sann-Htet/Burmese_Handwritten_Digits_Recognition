@@ -1,21 +1,28 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+import cv2
+
+# Load model via "saved_model" format
+model = tf.keras.models.load_model('../model')
 
 # Testing a real-world image
-image_path = "../images/Burmese_number_5.jpg"
-img_input = tf.io.read_file(image_path)
-img_input = tf.image.decode_image(img_input)
-img_input = tf.image.rgb_to_grayscale(img_input)
-img_input = 255 - img_input
-img_input = tf.image.resize(img_input, size=(28, 28), method='bilinear')
+image_path = "../images/NRC_digits/five.png"
+image = tf.keras.preprocessing.image.load_img(image_path) # load image
+image = cv2.cvtColor(np.array(image), cv2.COLOR_BGR2GRAY) # convert to Grayscale
+image = cv2.resize(image, (28, 28), interpolation=cv2.INTER_LINEAR) # rescale the image
+# Apply thresholding to remove noise and enhance contrast
+threshold_value = 107  # Adjust this threshold as needed
+_, thresholded_image = cv2.threshold(image, threshold_value, 255, cv2.THRESH_BINARY)
 
-plt.imshow(img_input, cmap='Greys')
+image = tf.expand_dims(thresholded_image, axis=-1)
+image = tf.cast(image, tf.float32)
+image = 255 - np.array(image)
 
-img_input = tf.expand_dims(img_input, axis=0)
+plt.imshow(image, cmap="Greys")
 
-# Load model
-loaded_model = tf.keras.models.load_model("../model")
+img_input = tf.expand_dims(image, axis=0)
 
-y_input_pred = loaded_model.predict(img_input)
+y_input_pred = model.predict(img_input)
 print(np.argmax(y_input_pred))
+print("Achieved a {:.2%} accuracy rate.".format(np.max(y_input_pred)))
